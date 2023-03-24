@@ -19,10 +19,12 @@ const habiticaClient = axios.create({
 type CreateTaskArgs = {
   text: string;
   type: HabiticaTaskTypes;
+  date?: string;
 };
-export function createTask({ text, type }: CreateTaskArgs) {
+export function createTask({ text, type, date }: CreateTaskArgs) {
   return habiticaClient.post("/api/v3/tasks/user", {
     text,
     type,
+    date,
   });
 }

@@ -10,6 +10,7 @@ export default function Command() {
       await createTask({
         text: todo.title,
         type: todo.type,
+        date: todo.date?.toISOString(),
       });
       await showHUD(`Created a task: ${todo.title} ✅`);
     } catch (e) {
@@ -47,6 +48,7 @@ const CreateTodoForm: FC<Props> = ({ onCreate }) => {
         <Form.Dropdown.Item value="habit" title="Habits" icon={Icon.Clock} />
         <Form.Dropdown.Item value="reward" title="Rewards" icon={Icon.Coin} />
       </Form.Dropdown>
+      <Form.DatePicker id="date" title="Date" />
     </Form>
   );
 };

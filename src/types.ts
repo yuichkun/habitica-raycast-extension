@@ -1,6 +1,7 @@
 export interface Todo {
   title: string;
   type: HabiticaTaskTypes;
+  date?: Date;
 }
 
 export type HabiticaTaskTypes = "habit" | "daily" | "todo" | "reward";
