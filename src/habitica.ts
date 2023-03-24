@@ -2,6 +2,8 @@ import { getPreferenceValues } from "@raycast/api";
 import axios from "axios";
 import { Preferences } from "./types";
 
+// yuichkun's habitica's ID
+const AUTHOR_ID = "f9b0f250-35a4-498c-ae5b-3aa48bf167e7";
 const { HABITICA_USER_ID, HABITICA_API_KEY } = getPreferenceValues<Preferences>();
 
 const habiticaClient = axios.create({
@@ -10,7 +12,7 @@ const habiticaClient = axios.create({
     Accept: "application/json",
     "x-api-user": HABITICA_USER_ID,
     "x-api-key": HABITICA_API_KEY,
-    "x-client": HABITICA_USER_ID + "-raycast",
+    "x-client": AUTHOR_ID + "-raycast",
   },
 });
 
