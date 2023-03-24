@@ -10,3 +10,7 @@ export interface Preferences {
   HABITICA_USER_ID: string;
   HABITICA_API_KEY: string;
 }
+
+export type HabiticaTask = {
+  text: string;
+};
