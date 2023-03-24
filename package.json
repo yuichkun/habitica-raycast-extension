@@ -23,6 +23,22 @@
       "mode": "view"
     }
   ],
+  "preferences": [
+    {
+      "name": "HABITICA_USER_ID",
+      "title": "Habitica User ID",
+      "description": "Habitica's User ID",
+      "type": "textfield",
+      "required": true
+    },
+    {
+      "name": "HABITICA_API_KEY",
+      "title": "Habitica API Key",
+      "description": "Habitica's API Key",
+      "type": "password",
+      "required": true
+    }
+  ],
   "dependencies": {
     "@raycast/api": "^1.48.9",
     "axios": "1.3.4"
