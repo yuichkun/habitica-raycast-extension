@@ -1,12 +1,23 @@
 import { Action, ActionPanel, Form, showHUD, showToast } from "@raycast/api";
 import { FC } from "react";
+import { createTask } from "./habitica";
 import { Todo } from "./types";
 
 export default function Command() {
   async function handleCreate(todo: Todo) {
-    await showToast({ title: "Creating a new Task...", message: todo.title });
-    // TODO: create task on habitica
-    await showHUD(`Created a task: ${todo.title} ✅`);
+    try {
+      await showToast({ title: "Creating a new Task...", message: todo.title });
+      await createTask({
+        text: todo.title,
+        type: "todo",
+      });
+      await showHUD(`Created a task: ${todo.title} ✅`);
+    } catch (e) {
+      if (e instanceof Error) {
+        await showToast({ title: "Failed:", message: e.message });
+      }
+      throw e;
+    }
   }
 
   return (
