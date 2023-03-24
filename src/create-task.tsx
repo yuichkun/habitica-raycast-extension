@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Form, showHUD, showToast } from "@raycast/api";
+import { Action, ActionPanel, Form, Icon, showHUD, showToast } from "@raycast/api";
 import { FC } from "react";
 import { createTask } from "./habitica";
 import { Todo } from "./types";
@@ -9,7 +9,7 @@ export default function Command() {
       await showToast({ title: "Creating a new Task...", message: todo.title });
       await createTask({
         text: todo.title,
-        type: "todo",
+        type: todo.type,
       });
       await showHUD(`Created a task: ${todo.title} ✅`);
     } catch (e) {
@@ -41,6 +41,12 @@ const CreateTodoForm: FC<Props> = ({ onCreate }) => {
       }
     >
       <Form.TextField id="title" title="Task Name" />
+      <Form.Dropdown id="type" title="Type" defaultValue="todo">
+        <Form.Dropdown.Item value="todo" title="To Do's" icon={Icon.Pencil} />
+        <Form.Dropdown.Item value="daily" title="Dailies" icon={Icon.Alarm} />
+        <Form.Dropdown.Item value="habit" title="Habits" icon={Icon.Clock} />
+        <Form.Dropdown.Item value="reward" title="Rewards" icon={Icon.Coin} />
+      </Form.Dropdown>
     </Form>
   );
 };

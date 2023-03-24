@@ -1,7 +1,9 @@
 export interface Todo {
   title: string;
-  isCompleted: boolean;
+  type: HabiticaTaskTypes;
 }
+
+export type HabiticaTaskTypes = "habit" | "daily" | "todo" | "reward";
 
 export interface Preferences {
   HABITICA_USER_ID: string;
