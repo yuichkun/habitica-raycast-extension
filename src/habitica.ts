@@ -39,3 +39,9 @@ export async function retrieveTasks() {
 export async function completeTask(taskId: string) {
   await habiticaClient.post(`/api/v3/tasks/${taskId}/score/up`);
 }
+
+export async function updateDueDate(taskId: string, date: Date | null) {
+  await habiticaClient.put(`/api/v3/tasks/${taskId}`, {
+    date: date,
+  });
+}

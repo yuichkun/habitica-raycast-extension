@@ -1,10 +1,10 @@
 import { Action, ActionPanel, Color, Icon, List, showHUD, showToast } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { completeTask, retrieveTasks } from "./habitica";
+import { completeTask, retrieveTasks, updateDueDate } from "./habitica";
 import { HabiticaTask } from "./types";
 
 const Command = () => {
-  const { isLoading, data } = useCachedPromise(retrieveTasks, [], {
+  const { isLoading, data, revalidate } = useCachedPromise(retrieveTasks, [], {
     initialData: [],
   });
 
@@ -12,7 +12,22 @@ const Command = () => {
     try {
       await showToast({ title: "Completing Task...", message: task.text });
       await completeTask(task.id);
-      await showHUD(`Completed a task: ${task.text} ✅`);
+      revalidate();
+    } catch (e) {
+      if (e instanceof Error) {
+        await showToast({ title: "Failed:", message: e.message });
+      }
+      throw e;
+    }
+  };
+  const handleUpdateDate = async (task: HabiticaTask, date: Date | null) => {
+    try {
+      await showToast({
+        title: "Updating Task Due Date",
+        message: `by ${date?.toLocaleDateString("ja-JP") ?? "No Date"}`,
+      });
+      await updateDueDate(task.id, date);
+      revalidate();
     } catch (e) {
       if (e instanceof Error) {
         await showToast({ title: "Failed:", message: e.message });
@@ -30,6 +45,16 @@ const Command = () => {
           actions={
             <ActionPanel title="Habitica">
               <ActionPanel.Submenu title="Edit">
+                <Action.PickDate
+                  title="Set Date"
+                  shortcut={{
+                    key: "d",
+                    modifiers: ["cmd", "shift"],
+                  }}
+                  onChange={(date) => {
+                    handleUpdateDate(task, date);
+                  }}
+                />
                 <Action
                   title="Mark as Complete"
                   shortcut={{
