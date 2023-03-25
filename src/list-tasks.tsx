@@ -1,6 +1,7 @@
 import { Action, ActionPanel, Color, Icon, List, showToast } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { completeTask, retrieveTasks, updateDueDate } from "./habitica";
+import { playSound } from "./sound";
 import { HabiticaTask } from "./types";
 
 const Command = () => {
@@ -13,6 +14,7 @@ const Command = () => {
       await showToast({ title: "Completing Task...", message: task.text });
       await completeTask(task.id);
       revalidate();
+      playSound("todo.mp3");
     } catch (e) {
       if (e instanceof Error) {
         await showToast({ title: "Failed:", message: e.message });
