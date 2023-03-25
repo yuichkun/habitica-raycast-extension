@@ -33,5 +33,11 @@ export async function retrieveTasks() {
   const res = await habiticaClient.get<{
     data: HabiticaTask[];
   }>("/api/v3/tasks/user?type=todos");
-  return res.data.data;
+  return res.data.data.map((task) => {
+    const date = task.date && new Date(task.date).toLocaleDateString("ja-JP");
+    return {
+      ...task,
+      date,
+    };
+  });
 }
