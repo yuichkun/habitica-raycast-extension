@@ -19,6 +19,17 @@ export type HabiticaTask = {
   tags: string[];
 };
 
+export type HabiticaDaily = {
+  id: string;
+  text: string;
+  completed: boolean;
+};
+
+export type HabiticaItems = {
+  tasks: HabiticaTask[];
+  dailys: HabiticaDaily[];
+};
+
 export type GetTagResponse = {
   success: boolean;
   data: Tag;

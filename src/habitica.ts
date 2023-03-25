@@ -1,6 +1,13 @@
 import { getPreferenceValues } from "@raycast/api";
 import axios from "axios";
-import { GetAllTagsResponse, GetTagResponse, HabiticaTask, HabiticaTaskTypes, Preferences } from "./types";
+import {
+  GetAllTagsResponse,
+  HabiticaDaily,
+  HabiticaItems,
+  HabiticaTask,
+  HabiticaTaskTypes,
+  Preferences,
+} from "./types";
 
 // yuichkun's habitica's ID
 const AUTHOR_ID = "f9b0f250-35a4-498c-ae5b-3aa48bf167e7";
@@ -31,11 +38,26 @@ export function createTask({ text, type, date, tags }: CreateTaskArgs) {
   });
 }
 
-export async function retrieveTasks() {
+async function retrieveTasks() {
   const res = await habiticaClient.get<{
     data: HabiticaTask[];
   }>("/api/v3/tasks/user?type=todos");
   return res.data.data;
+}
+
+async function retrieveDailys() {
+  const res = await habiticaClient.get<{
+    data: HabiticaDaily[];
+  }>("/api/v3/tasks/user?type=dailys");
+  return res.data.data;
+}
+
+export async function retrieveAllItems(): Promise<HabiticaItems> {
+  const [tasks, dailys] = await Promise.all([retrieveTasks(), retrieveDailys()]);
+  return {
+    tasks,
+    dailys,
+  };
 }
 
 export async function completeTask(taskId: string) {

@@ -2,7 +2,7 @@ import { Icon, List } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { useState } from "react";
 import { sortByDate } from "./date";
-import { getAllTags, retrieveTasks } from "./habitica";
+import { getAllTags, retrieveAllItems } from "./habitica";
 import { useSearch } from "./hooks/useSearch";
 import { TaskLineItem } from "./TaskLineItem";
 import { HabiticaTaskTypes } from "./types";
@@ -10,23 +10,26 @@ import { HabiticaTaskTypes } from "./types";
 const Command = () => {
   const [taskType, setTaskType] = useState<HabiticaTaskTypes>("todo");
   const {
-    isLoading: isAllTasksLoading,
-    data: unfilteredTasks,
+    isLoading: isAllItemLoading,
+    data: unfilteredItem,
     revalidate,
-  } = useCachedPromise(retrieveTasks, [], {
-    initialData: [],
+  } = useCachedPromise(retrieveAllItems, [], {
+    initialData: {
+      tasks: [],
+      dailys: [],
+    },
   });
   const { isLoading: isAllTagLoading, data: allTags } = useCachedPromise(getAllTags, [], {
     keepPreviousData: true,
   });
 
-  const { setSearchText, filteredTasks } = useSearch(unfilteredTasks, allTags);
+  const { setSearchText, filteredItems } = useSearch(unfilteredItem, allTags);
 
   if (allTags === undefined) return null;
 
   return (
     <List
-      isLoading={isAllTasksLoading || isAllTagLoading}
+      isLoading={isAllItemLoading || isAllTagLoading}
       onSearchTextChange={setSearchText}
       searchBarAccessory={
         <List.Dropdown
@@ -40,9 +43,10 @@ const Command = () => {
         </List.Dropdown>
       }
     >
-      {filteredTasks.sort(sortByDate).map((task) => (
-        <TaskLineItem key={task.id} task={task} refetchList={revalidate} allTags={allTags} />
-      ))}
+      {taskType === "todo" &&
+        filteredItems.tasks
+          .sort(sortByDate)
+          .map((task) => <TaskLineItem key={task.id} task={task} refetchList={revalidate} allTags={allTags} />)}
     </List>
   );
 };

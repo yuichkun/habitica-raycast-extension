@@ -1,16 +1,16 @@
 import Fuse from "fuse.js";
 import { useState, useEffect } from "react";
-import { HabiticaTask, Tag } from "../types";
+import { HabiticaItems, HabiticaTask, Tag } from "../types";
 
-export function useSearch(unfilteredTasks: HabiticaTask[], allTags?: Tag[]) {
+export function useSearch(unfilteredItems: HabiticaItems, allTags?: Tag[]) {
   const [searchText, setSearchText] = useState("");
-  const [filteredTasks, setFilteredTasks] = useState<HabiticaTask[]>(unfilteredTasks);
+  const [filteredItems, setFilteredItems] = useState<HabiticaItems>(unfilteredItems);
   useEffect(() => {
     if (searchText === "") {
-      setFilteredTasks(unfilteredTasks);
+      setFilteredItems(unfilteredItems);
       return;
     }
-    const searchTargets = unfilteredTasks.map((task) => {
+    const searchTargets = unfilteredItems.tasks.map((task) => {
       return {
         ...task,
         tags: task.tags.map((tagId) => {
@@ -24,15 +24,16 @@ export function useSearch(unfilteredTasks: HabiticaTask[], allTags?: Tag[]) {
       keys: ["text", "tags.name"],
     });
     const result = fuse.search(searchText);
-    setFilteredTasks(
-      result.map((r) => ({
+    setFilteredItems({
+      tasks: result.map((r) => ({
         ...r.item,
         tags: r.item.tags.map((t) => t.id),
-      }))
-    );
+      })),
+      dailys: unfilteredItems.dailys,
+    });
   }, [searchText]);
   return {
     setSearchText,
-    filteredTasks,
+    filteredItems,
   };
 }
