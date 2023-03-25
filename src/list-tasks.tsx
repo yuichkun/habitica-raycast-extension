@@ -3,29 +3,43 @@ import { useCachedPromise } from "@raycast/utils";
 import { FC } from "react";
 import { HabiticaEditMenu } from "./actions/edit";
 import { determineColor } from "./date";
-import { getTags, retrieveTasks } from "./habitica";
+import { getAllTags, retrieveTasks } from "./habitica";
 import { nameToColor } from "./nameToColor";
 import { priorityToColor } from "./priorityToColor";
-import { HabiticaTask } from "./types";
+import { HabiticaTask, Tag } from "./types";
 
 const Command = () => {
-  const { isLoading, data, revalidate } = useCachedPromise(retrieveTasks, [], {
+  const {
+    isLoading: isAllTasksLoading,
+    data,
+    revalidate,
+  } = useCachedPromise(retrieveTasks, [], {
     initialData: [],
   });
+  const { isLoading: isAllTagLoading, data: allTags } = useCachedPromise(getAllTags, [], {
+    keepPreviousData: true,
+  });
+  if (allTags === undefined) return null;
 
   return (
-    <List isLoading={isLoading}>
+    <List isLoading={isAllTasksLoading || isAllTagLoading}>
       {data.sort(sortByDate).map((task) => (
-        <TaskLineItem key={task.id} task={task} refetchList={revalidate} />
+        <TaskLineItem key={task.id} task={task} refetchList={revalidate} allTags={allTags} />
       ))}
     </List>
   );
 };
 
-const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void }> = ({ task, refetchList }) => {
-  const { isLoading, data: tags } = useCachedPromise(getTags, [task.tags]);
-
-  if (isLoading || tags === undefined) return null;
+const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void; allTags: Tag[] }> = ({
+  task,
+  refetchList,
+  allTags,
+}) => {
+  const tags = task.tags.map((tagId) => {
+    const found = allTags.find((tag) => tag.id === tagId);
+    if (!found) throw new Error(`${tagId} is not a valid tag id`);
+    return found;
+  });
   return (
     <List.Item
       key={task.id}
