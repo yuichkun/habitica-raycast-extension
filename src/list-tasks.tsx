@@ -1,7 +1,7 @@
 import { Action, ActionPanel, Color, Icon, List, showToast } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { FC } from "react";
-import { completeTask, retrieveTasks, updateDueDate } from "./habitica";
+import { completeTask, getTags, retrieveTasks, updateDueDate } from "./habitica";
 import { playSound } from "./sound";
 import { HabiticaTask } from "./types";
 
@@ -13,13 +13,14 @@ const Command = () => {
   return (
     <List isLoading={isLoading}>
       {data.sort(sortByDate).map((task) => (
-        <TaskLineItem task={task} refetchList={revalidate} />
+        <TaskLineItem key={task.id} task={task} refetchList={revalidate} />
       ))}
     </List>
   );
 };
 
 const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void }> = ({ task, refetchList }) => {
+  const { isLoading, data: tags } = useCachedPromise(getTags, [task.tags]);
   const handleComplete = async (task: HabiticaTask) => {
     try {
       await showToast({ title: "Completing Task...", message: task.text });
@@ -48,9 +49,11 @@ const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void }> = ({ tas
       throw e;
     }
   };
+
+  if (isLoading || tags === undefined) return null;
   return (
     <List.Item
-      key={task.text}
+      key={task.id}
       title={task.text}
       actions={
         <ActionPanel title="Habitica">
@@ -77,6 +80,11 @@ const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void }> = ({ tas
         </ActionPanel>
       }
       accessories={[
+        ...tags.map((tag) => ({
+          tag: {
+            value: tag.name,
+          },
+        })),
         {
           date: task.date
             ? {

@@ -46,6 +46,11 @@ export async function updateDueDate(taskId: string, date: Date | null) {
   });
 }
 
-export async function getTag(tagId: string) {
-  return habiticaClient.get<GetTagResponse>(`/api/v3/tags/${tagId}`);
+async function getTag(tagId: string) {
+  const res = await habiticaClient.get<GetTagResponse>(`/api/v3/tags/${tagId}`);
+  return res.data.data;
+}
+
+export async function getTags(tagIds: string[]) {
+  return Promise.all(tagIds.map((tagId) => getTag(tagId)));
 }
