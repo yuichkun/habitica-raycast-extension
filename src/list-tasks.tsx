@@ -48,7 +48,8 @@ const Command = () => {
         filteredItems.tasks
           .sort(sortByDate)
           .map((task) => <TaskLineItem key={task.id} task={task} refetchList={revalidate} allTags={allTags} />)}
-      {taskType === "daily" && filteredItems.dailys.map((daily) => <DailyLineItem daily={daily} />)}
+      {taskType === "daily" &&
+        filteredItems.dailys.map((daily) => <DailyLineItem key={daily.id} daily={daily} refetchList={revalidate} />)}
     </List>
   );
 };

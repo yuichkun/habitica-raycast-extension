@@ -24,7 +24,7 @@ export const TaskLineItem: FC<Props> = ({ task, refetchList, allTags }) => {
       title={task.text}
       actions={
         <ActionPanel title="Habitica">
-          <HabiticaEditMenu task={task} refetchList={refetchList} />
+          <HabiticaEditMenu item={task} refetchList={refetchList} />
         </ActionPanel>
       }
       accessories={[

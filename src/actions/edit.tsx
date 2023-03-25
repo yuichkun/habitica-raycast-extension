@@ -3,19 +3,31 @@ import { useCachedPromise } from "@raycast/utils";
 import { FC } from "react";
 import { completeTask, deleteTask, getAllTags, updateDueDate, updateTags } from "../habitica";
 import { playSound } from "../sound";
-import { HabiticaTask } from "../types";
+import { HabiticaDaily, HabiticaTask } from "../types";
 type Props = {
-  task: HabiticaTask;
+  item: HabiticaTask | HabiticaDaily;
   refetchList: () => void;
 };
 
-export const HabiticaEditMenu: FC<Props> = ({ task, refetchList }) => {
-  const handleComplete = async (task: HabiticaTask) => {
+function isHabiticaTask(item: HabiticaTask | HabiticaDaily): item is HabiticaTask {
+  if ("date" in item) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export const HabiticaEditMenu: FC<Props> = ({ item, refetchList }) => {
+  const handleComplete = async (task: HabiticaTask | HabiticaDaily) => {
     try {
       await showToast({ title: "Completing Task...", message: task.text });
       await completeTask(task.id);
       refetchList();
-      playSound("todo.mp3");
+      if (isHabiticaTask(item)) {
+        playSound("todo.mp3");
+      } else {
+        // TODO: play the other file
+      }
     } catch (e) {
       if (e instanceof Error) {
         await showToast({ title: "Failed:", message: e.message });
@@ -38,14 +50,13 @@ export const HabiticaEditMenu: FC<Props> = ({ task, refetchList }) => {
       throw e;
     }
   };
-  const handleDelete = async (task: HabiticaTask) => {
+  const handleDelete = async (task: HabiticaTask | HabiticaDaily) => {
     try {
       await showToast({
         title: "Deleting the task",
         message: task.text,
       });
       await deleteTask(task.id);
-      // await updateDueDate(task.id);
       refetchList();
     } catch (e) {
       if (e instanceof Error) {
@@ -56,16 +67,18 @@ export const HabiticaEditMenu: FC<Props> = ({ task, refetchList }) => {
   };
   return (
     <ActionPanel.Submenu title="Edit">
-      <Action.PickDate
-        title="Set Date"
-        shortcut={{
-          key: "d",
-          modifiers: ["cmd", "shift"],
-        }}
-        onChange={(date) => {
-          handleUpdateDate(task, date);
-        }}
-      />
+      {isHabiticaTask(item) && (
+        <Action.PickDate
+          title="Set Date"
+          shortcut={{
+            key: "d",
+            modifiers: ["cmd", "shift"],
+          }}
+          onChange={(date) => {
+            handleUpdateDate(item, date);
+          }}
+        />
+      )}
       <Action.Push
         title="Change Tags"
         icon={Icon.Tag}
@@ -73,7 +86,7 @@ export const HabiticaEditMenu: FC<Props> = ({ task, refetchList }) => {
           key: "t",
           modifiers: ["cmd", "shift"],
         }}
-        target={<ChangeTags task={task} refetchList={refetchList} />}
+        target={<ChangeTags item={item} refetchList={refetchList} />}
       />
       <Action
         title="Delete Task"
@@ -82,7 +95,7 @@ export const HabiticaEditMenu: FC<Props> = ({ task, refetchList }) => {
           key: "delete",
           modifiers: ["cmd", "shift"],
         }}
-        onAction={() => handleDelete(task)}
+        onAction={() => handleDelete(item)}
       />
       <Action
         title="Mark as Complete"
@@ -91,17 +104,17 @@ export const HabiticaEditMenu: FC<Props> = ({ task, refetchList }) => {
           key: "c",
           modifiers: ["cmd", "shift"],
         }}
-        onAction={() => handleComplete(task)}
+        onAction={() => handleComplete(item)}
       />
     </ActionPanel.Submenu>
   );
 };
 
 type ChangeTagsProps = {
-  task: HabiticaTask;
+  item: HabiticaTask | HabiticaDaily;
   refetchList: () => void;
 };
-const ChangeTags: FC<ChangeTagsProps> = ({ task, refetchList }) => {
+const ChangeTags: FC<ChangeTagsProps> = ({ item: item, refetchList }) => {
   const { pop } = useNavigation();
   const { isLoading, data: tags } = useCachedPromise(getAllTags, [], {
     initialData: [],
@@ -111,9 +124,9 @@ const ChangeTags: FC<ChangeTagsProps> = ({ task, refetchList }) => {
     try {
       await showToast({
         title: "Updating tags of task",
-        message: task.text,
+        message: item.text,
       });
-      await updateTags(task.id, tags);
+      await updateTags(item.id, tags);
       refetchList();
       pop();
     } catch (e) {
