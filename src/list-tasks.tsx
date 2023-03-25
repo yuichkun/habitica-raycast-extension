@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Color, Icon, List, showHUD, showToast } from "@raycast/api";
+import { Action, ActionPanel, Color, Icon, List, showToast } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { completeTask, retrieveTasks, updateDueDate } from "./habitica";
 import { HabiticaTask } from "./types";
