@@ -59,7 +59,7 @@ const CreateTodoForm: FC<Props> = ({ onCreate, tags, isLoading }) => {
       <Form.DatePicker id="date" title="Date" />
       <Form.TagPicker id="tags" title="Tags">
         {tags.map((tag) => (
-          <Form.TagPicker.Item value={tag.id} title={tag.name} />
+          <Form.TagPicker.Item key={tag.id} value={tag.id} title={tag.name} />
         ))}
       </Form.TagPicker>
     </Form>
