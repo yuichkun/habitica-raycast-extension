@@ -26,7 +26,7 @@ export const HabiticaEditMenu: FC<Props> = ({ item, refetchList }) => {
       if (isHabiticaTask(item)) {
         playSound("todo.mp3");
       } else {
-        // TODO: play the other file
+        playSound("daily.mp3");
       }
     } catch (e) {
       if (e instanceof Error) {
