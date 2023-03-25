@@ -1,6 +1,7 @@
-import { ActionPanel, Action, showToast, Icon } from "@raycast/api";
+import { Action, ActionPanel, Form, Icon, showToast, useNavigation } from "@raycast/api";
+import { useCachedPromise } from "@raycast/utils";
 import { FC } from "react";
-import { completeTask, deleteTask, updateDueDate } from "../habitica";
+import { completeTask, deleteTask, getAllTags, updateDueDate, updateTags } from "../habitica";
 import { playSound } from "../sound";
 import { HabiticaTask } from "../types";
 type Props = {
@@ -65,6 +66,15 @@ export const HabiticaEditMenu: FC<Props> = ({ task, refetchList }) => {
           handleUpdateDate(task, date);
         }}
       />
+      <Action.Push
+        title="Change Tags"
+        icon={Icon.Tag}
+        shortcut={{
+          key: "t",
+          modifiers: ["cmd", "shift"],
+        }}
+        target={<ChangeTags task={task} />}
+      />
       <Action
         title="Delete Task"
         icon={Icon.DeleteDocument}
@@ -84,5 +94,48 @@ export const HabiticaEditMenu: FC<Props> = ({ task, refetchList }) => {
         onAction={() => handleComplete(task)}
       />
     </ActionPanel.Submenu>
+  );
+};
+
+type ChangeTagsProps = {
+  task: HabiticaTask;
+};
+const ChangeTags: FC<ChangeTagsProps> = ({ task }) => {
+  const { pop } = useNavigation();
+  const { isLoading, data: tags } = useCachedPromise(getAllTags, [], {
+    initialData: [],
+  });
+
+  const handleSubmit = async ({ tags }: { tags: string[] }) => {
+    try {
+      await showToast({
+        title: "Updating tags of task",
+        message: task.text,
+      });
+      await updateTags(task.id, tags);
+      pop();
+    } catch (e) {
+      if (e instanceof Error) {
+        await showToast({ title: "Failed:", message: e.message });
+      }
+      throw e;
+    }
+  };
+
+  return (
+    <Form
+      isLoading={isLoading}
+      actions={
+        <ActionPanel>
+          <Action.SubmitForm title="Change Tags" onSubmit={handleSubmit} />
+        </ActionPanel>
+      }
+    >
+      <Form.TagPicker id="tags" title="Tags">
+        {tags.map((tag) => (
+          <Form.TagPicker.Item key={tag.id} value={tag.id} title={tag.name} />
+        ))}
+      </Form.TagPicker>
+    </Form>
   );
 };

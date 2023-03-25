@@ -65,3 +65,9 @@ export async function getAllTags() {
   const res = await habiticaClient.get<GetAllTagsResponse>(`/api/v3/tags`);
   return res.data.data;
 }
+
+export async function updateTags(taskId: string, tags: string[]) {
+  await habiticaClient.put(`/api/v3/tasks/${taskId}`, {
+    tags,
+  });
+}
