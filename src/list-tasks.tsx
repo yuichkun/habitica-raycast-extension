@@ -2,6 +2,7 @@ import { Action, ActionPanel, Color, Icon, List, showToast } from "@raycast/api"
 import { useCachedPromise } from "@raycast/utils";
 import { FC } from "react";
 import { completeTask, getTags, retrieveTasks, updateDueDate } from "./habitica";
+import { nameToColor } from "./nameToColor";
 import { playSound } from "./sound";
 import { HabiticaTask } from "./types";
 
@@ -83,6 +84,7 @@ const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void }> = ({ tas
         ...tags.map((tag) => ({
           tag: {
             value: tag.name,
+            color: nameToColor(tag.name),
           },
         })),
         {
