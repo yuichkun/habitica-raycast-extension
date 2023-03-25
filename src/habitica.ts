@@ -1,6 +1,6 @@
 import { getPreferenceValues } from "@raycast/api";
 import axios from "axios";
-import { HabiticaTask, HabiticaTaskTypes, Preferences } from "./types";
+import { GetTagResponse, HabiticaTask, HabiticaTaskTypes, Preferences } from "./types";
 
 // yuichkun's habitica's ID
 const AUTHOR_ID = "f9b0f250-35a4-498c-ae5b-3aa48bf167e7";
@@ -44,4 +44,8 @@ export async function updateDueDate(taskId: string, date: Date | null) {
   await habiticaClient.put(`/api/v3/tasks/${taskId}`, {
     date: date,
   });
+}
+
+export async function getTag(tagId: string) {
+  return habiticaClient.get<GetTagResponse>(`/api/v3/tags/${tagId}`);
 }

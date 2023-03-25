@@ -15,4 +15,13 @@ export type HabiticaTask = {
   id: string;
   text: string;
   date: string | null;
+  tags: string[];
+};
+
+export type GetTagResponse = {
+  success: boolean;
+  data: {
+    name: string;
+    id: string;
+  };
 };
