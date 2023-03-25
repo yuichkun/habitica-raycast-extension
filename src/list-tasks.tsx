@@ -1,9 +1,9 @@
-import { Action, ActionPanel, Color, Icon, List, showToast } from "@raycast/api";
+import { ActionPanel, Color, Icon, List } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { FC } from "react";
-import { completeTask, getTags, retrieveTasks, updateDueDate } from "./habitica";
+import { HabiticaEditMenu } from "./actions/edit";
+import { getTags, retrieveTasks } from "./habitica";
 import { nameToColor } from "./nameToColor";
-import { playSound } from "./sound";
 import { HabiticaTask } from "./types";
 
 const Command = () => {
@@ -22,34 +22,6 @@ const Command = () => {
 
 const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void }> = ({ task, refetchList }) => {
   const { isLoading, data: tags } = useCachedPromise(getTags, [task.tags]);
-  const handleComplete = async (task: HabiticaTask) => {
-    try {
-      await showToast({ title: "Completing Task...", message: task.text });
-      await completeTask(task.id);
-      refetchList();
-      playSound("todo.mp3");
-    } catch (e) {
-      if (e instanceof Error) {
-        await showToast({ title: "Failed:", message: e.message });
-      }
-      throw e;
-    }
-  };
-  const handleUpdateDate = async (task: HabiticaTask, date: Date | null) => {
-    try {
-      await showToast({
-        title: "Updating Task Due Date",
-        message: `by ${date?.toLocaleDateString("ja-JP") ?? "No Date"}`,
-      });
-      await updateDueDate(task.id, date);
-      refetchList();
-    } catch (e) {
-      if (e instanceof Error) {
-        await showToast({ title: "Failed:", message: e.message });
-      }
-      throw e;
-    }
-  };
 
   if (isLoading || tags === undefined) return null;
   return (
@@ -58,26 +30,7 @@ const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void }> = ({ tas
       title={task.text}
       actions={
         <ActionPanel title="Habitica">
-          <ActionPanel.Submenu title="Edit">
-            <Action.PickDate
-              title="Set Date"
-              shortcut={{
-                key: "d",
-                modifiers: ["cmd", "shift"],
-              }}
-              onChange={(date) => {
-                handleUpdateDate(task, date);
-              }}
-            />
-            <Action
-              title="Mark as Complete"
-              shortcut={{
-                key: "c",
-                modifiers: ["cmd", "shift"],
-              }}
-              onAction={() => handleComplete(task)}
-            />
-          </ActionPanel.Submenu>
+          <HabiticaEditMenu task={task} refetchList={refetchList} />
         </ActionPanel>
       }
       accessories={[
