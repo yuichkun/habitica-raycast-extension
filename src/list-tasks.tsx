@@ -13,7 +13,7 @@ const Command = () => {
   const {
     isLoading: isAllItemLoading,
     data: unfilteredItem,
-    revalidate,
+    revalidate: refetchList,
   } = useCachedPromise(retrieveAllItems, [], {
     initialData: {
       tasks: [],
@@ -47,10 +47,10 @@ const Command = () => {
       {taskType === "todo" &&
         filteredItems.tasks
           .sort(sortByDate)
-          .map((task) => <TaskLineItem key={task.id} task={task} refetchList={revalidate} allTags={allTags} />)}
+          .map((task) => <TaskLineItem key={task.id} task={task} refetchList={refetchList} allTags={allTags} />)}
       {taskType === "daily" &&
         filteredItems.dailys.map((daily) => (
-          <DailyLineItem key={daily.id} daily={daily} refetchList={revalidate} allTags={allTags} />
+          <DailyLineItem key={daily.id} daily={daily} refetchList={refetchList} allTags={allTags} />
         ))}
     </List>
   );
