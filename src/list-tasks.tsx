@@ -1,6 +1,7 @@
 import { Icon, List } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { useState } from "react";
+import { DailyLineItem } from "./DailyLineItem";
 import { sortByDate } from "./date";
 import { getAllTags, retrieveAllItems } from "./habitica";
 import { useSearch } from "./hooks/useSearch";
@@ -47,6 +48,7 @@ const Command = () => {
         filteredItems.tasks
           .sort(sortByDate)
           .map((task) => <TaskLineItem key={task.id} task={task} refetchList={revalidate} allTags={allTags} />)}
+      {taskType === "daily" && filteredItems.dailys.map((daily) => <DailyLineItem daily={daily} />)}
     </List>
   );
 };
