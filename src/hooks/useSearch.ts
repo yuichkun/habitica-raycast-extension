@@ -22,6 +22,7 @@ export function useSearch(unfilteredItems: HabiticaItems, allTags?: Tag[]) {
     });
     const fuse = new Fuse(searchTargets, {
       keys: ["text", "tags.name"],
+      threshold: 0.4,
     });
     const result = fuse.search(searchText);
     setFilteredItems({
