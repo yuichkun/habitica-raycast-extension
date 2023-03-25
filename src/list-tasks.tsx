@@ -3,7 +3,7 @@ import { useCachedPromise } from "@raycast/utils";
 import { FC, useEffect, useState } from "react";
 import { HabiticaEditMenu } from "./actions/edit";
 import Fuse from "fuse.js";
-import { determineColor } from "./date";
+import { determineColor, sortByDate } from "./date";
 import { getAllTags, retrieveTasks } from "./habitica";
 import { nameToColor } from "./nameToColor";
 import { priorityToColor } from "./priorityToColor";
@@ -114,17 +114,5 @@ const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void; allTags: T
     />
   );
 };
-
-function sortByDate(a: HabiticaTask, b: HabiticaTask) {
-  if (a.date && b.date) {
-    return new Date(a.date).getTime() - new Date(b.date).getTime();
-  } else if (a.date) {
-    return -1;
-  } else if (b.date) {
-    return 1;
-  } else {
-    return 0;
-  }
-}
 
 export default Command;
