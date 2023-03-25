@@ -73,7 +73,7 @@ export const HabiticaEditMenu: FC<Props> = ({ task, refetchList }) => {
           key: "t",
           modifiers: ["cmd", "shift"],
         }}
-        target={<ChangeTags task={task} />}
+        target={<ChangeTags task={task} refetchList={refetchList} />}
       />
       <Action
         title="Delete Task"
@@ -99,8 +99,9 @@ export const HabiticaEditMenu: FC<Props> = ({ task, refetchList }) => {
 
 type ChangeTagsProps = {
   task: HabiticaTask;
+  refetchList: () => void;
 };
-const ChangeTags: FC<ChangeTagsProps> = ({ task }) => {
+const ChangeTags: FC<ChangeTagsProps> = ({ task, refetchList }) => {
   const { pop } = useNavigation();
   const { isLoading, data: tags } = useCachedPromise(getAllTags, [], {
     initialData: [],
@@ -113,6 +114,7 @@ const ChangeTags: FC<ChangeTagsProps> = ({ task }) => {
         message: task.text,
       });
       await updateTags(task.id, tags);
+      refetchList();
       pop();
     } catch (e) {
       if (e instanceof Error) {
