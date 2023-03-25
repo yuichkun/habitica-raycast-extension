@@ -1,6 +1,7 @@
 import { Color, Icon, List } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { retrieveTasks } from "./habitica";
+import { HabiticaTask } from "./types";
 
 const Command = () => {
   const { isLoading, data } = useCachedPromise(retrieveTasks, [], {
@@ -9,7 +10,7 @@ const Command = () => {
 
   return (
     <List isLoading={isLoading}>
-      {data.map((task) => (
+      {data.sort(sortByDate).map((task) => (
         <List.Item
           key={task.text}
           title={task.text}
@@ -20,7 +21,7 @@ const Command = () => {
                     color: priorityToColor(determinePriority(task.date)),
                     value: new Date(task.date),
                   }
-                : undefined,
+                : null,
             },
           ]}
           detail={
@@ -42,6 +43,18 @@ const Command = () => {
     </List>
   );
 };
+
+function sortByDate(a: HabiticaTask, b: HabiticaTask) {
+  if (a.date && b.date) {
+    return new Date(a.date).getTime() - new Date(b.date).getTime();
+  } else if (a.date) {
+    return -1;
+  } else if (b.date) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
 
 type Priority = "high" | "medium" | "low";
 
