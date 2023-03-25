@@ -32,7 +32,7 @@ export function useSearch(unfilteredItems: HabiticaItems, allTags?: Tag[]) {
       })),
       dailys: unfilteredItems.dailys,
     });
-  }, [searchText]);
+  }, [searchText, unfilteredItems]);
   return {
     setSearchText,
     filteredItems,
