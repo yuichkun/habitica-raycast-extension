@@ -12,6 +12,7 @@ export interface Preferences {
 }
 
 export type HabiticaTask = {
+  id: string;
   text: string;
   date: string | null;
 };

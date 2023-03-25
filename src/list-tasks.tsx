@@ -1,6 +1,6 @@
-import { Color, Icon, List } from "@raycast/api";
+import { Action, ActionPanel, Color, Icon, List, showHUD, showToast } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { retrieveTasks } from "./habitica";
+import { completeTask, retrieveTasks } from "./habitica";
 import { HabiticaTask } from "./types";
 
 const Command = () => {
@@ -8,12 +8,39 @@ const Command = () => {
     initialData: [],
   });
 
+  const handleComplete = async (task: HabiticaTask) => {
+    try {
+      await showToast({ title: "Completing Task...", message: task.text });
+      await completeTask(task.id);
+      await showHUD(`Completed a task: ${task.text} ✅`);
+    } catch (e) {
+      if (e instanceof Error) {
+        await showToast({ title: "Failed:", message: e.message });
+      }
+      throw e;
+    }
+  };
+
   return (
     <List isLoading={isLoading}>
       {data.sort(sortByDate).map((task) => (
         <List.Item
           key={task.text}
           title={task.text}
+          actions={
+            <ActionPanel title="Habitica">
+              <ActionPanel.Submenu title="Edit">
+                <Action
+                  title="Mark as Complete"
+                  shortcut={{
+                    key: "c",
+                    modifiers: ["cmd", "shift"],
+                  }}
+                  onAction={() => handleComplete(task)}
+                />
+              </ActionPanel.Submenu>
+            </ActionPanel>
+          }
           accessories={[
             {
               date: task.date

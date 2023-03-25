@@ -35,3 +35,7 @@ export async function retrieveTasks() {
   }>("/api/v3/tasks/user?type=todos");
   return res.data.data;
 }
+
+export async function completeTask(taskId: string) {
+  await habiticaClient.post(`/api/v3/tasks/${taskId}/score/up`);
+}
