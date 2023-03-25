@@ -1,6 +1,6 @@
 import { getPreferenceValues } from "@raycast/api";
 import axios from "axios";
-import { GetTagResponse, HabiticaTask, HabiticaTaskTypes, Preferences } from "./types";
+import { GetAllTagsResponse, GetTagResponse, HabiticaTask, HabiticaTaskTypes, Preferences } from "./types";
 
 // yuichkun's habitica's ID
 const AUTHOR_ID = "f9b0f250-35a4-498c-ae5b-3aa48bf167e7";
@@ -20,12 +20,14 @@ type CreateTaskArgs = {
   text: string;
   type: HabiticaTaskTypes;
   date?: string;
+  tags?: string[];
 };
-export function createTask({ text, type, date }: CreateTaskArgs) {
+export function createTask({ text, type, date, tags }: CreateTaskArgs) {
   return habiticaClient.post("/api/v3/tasks/user", {
     text,
     type,
     date,
+    tags,
   });
 }
 
@@ -53,4 +55,9 @@ async function getTag(tagId: string) {
 
 export async function getTags(tagIds: string[]) {
   return Promise.all(tagIds.map((tagId) => getTag(tagId)));
+}
+
+export async function getAllTags() {
+  const res = await habiticaClient.get<GetAllTagsResponse>(`/api/v3/tags`);
+  return res.data.data;
 }

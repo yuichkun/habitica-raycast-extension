@@ -2,6 +2,7 @@ export interface Todo {
   title: string;
   type: HabiticaTaskTypes;
   date?: Date;
+  tags: string[];
 }
 
 export type HabiticaTaskTypes = "habit" | "daily" | "todo" | "reward";
@@ -20,8 +21,15 @@ export type HabiticaTask = {
 
 export type GetTagResponse = {
   success: boolean;
-  data: {
-    name: string;
-    id: string;
-  };
+  data: Tag;
+};
+
+export type Tag = {
+  name: string;
+  id: string;
+};
+
+export type GetAllTagsResponse = {
+  success: boolean;
+  data: Tag[];
 };

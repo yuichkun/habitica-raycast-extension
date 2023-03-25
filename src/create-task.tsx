@@ -1,9 +1,13 @@
 import { Action, ActionPanel, Form, Icon, showHUD, showToast } from "@raycast/api";
+import { useCachedPromise } from "@raycast/utils";
 import { FC } from "react";
-import { createTask } from "./habitica";
-import { Todo } from "./types";
+import { createTask, getAllTags } from "./habitica";
+import { Tag, Todo } from "./types";
 
 export default function Command() {
+  const { isLoading, data } = useCachedPromise(getAllTags, [], {
+    initialData: [],
+  });
   async function handleCreate(todo: Todo) {
     try {
       await showToast({ title: "Creating a new Task...", message: todo.title });
@@ -11,6 +15,7 @@ export default function Command() {
         text: todo.title,
         type: todo.type,
         date: todo.date?.toISOString(),
+        tags: todo.tags,
       });
       await showHUD(`Created a task: ${todo.title} ✅`);
     } catch (e) {
@@ -23,18 +28,21 @@ export default function Command() {
 
   return (
     <>
-      <CreateTodoForm onCreate={handleCreate} />
+      <CreateTodoForm onCreate={handleCreate} tags={data} isLoading={isLoading} />
     </>
   );
 }
 
 type Props = {
+  isLoading: boolean;
+  tags: Tag[];
   onCreate: (todo: Todo) => void;
 };
 
-const CreateTodoForm: FC<Props> = ({ onCreate }) => {
+const CreateTodoForm: FC<Props> = ({ onCreate, tags, isLoading }) => {
   return (
     <Form
+      isLoading={isLoading}
       actions={
         <ActionPanel>
           <Action.SubmitForm title="Create Todo" onSubmit={onCreate} />
@@ -49,6 +57,11 @@ const CreateTodoForm: FC<Props> = ({ onCreate }) => {
         <Form.Dropdown.Item value="reward" title="Rewards" icon={Icon.Coin} />
       </Form.Dropdown>
       <Form.DatePicker id="date" title="Date" />
+      <Form.TagPicker id="tags" title="Tags">
+        {tags.map((tag) => (
+          <Form.TagPicker.Item value={tag.id} title={tag.name} />
+        ))}
+      </Form.TagPicker>
     </Form>
   );
 };
