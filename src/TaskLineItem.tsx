@@ -43,20 +43,6 @@ export const TaskLineItem: FC<Props> = ({ task, refetchList, allTags }) => {
             : null,
         },
       ]}
-      detail={
-        <List.Item.Detail
-          metadata={
-            <List.Item.Detail.Metadata>
-              <List.Item.Detail.Metadata.Label
-                title="Due Date"
-                text={task.date ?? "No Due Date"}
-                icon={Icon.Calendar}
-              />
-              <List.Item.Detail.Metadata.Separator />
-            </List.Item.Detail.Metadata>
-          }
-        />
-      }
     />
   );
 };
