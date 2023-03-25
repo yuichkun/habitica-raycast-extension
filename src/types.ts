@@ -22,6 +22,7 @@ export type HabiticaTask = {
 export type HabiticaDaily = {
   id: string;
   text: string;
+  tags: string[];
   completed: boolean;
 };
 
