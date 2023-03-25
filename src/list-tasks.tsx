@@ -1,5 +1,6 @@
 import { Action, ActionPanel, Color, Icon, List, showToast } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
+import { FC } from "react";
 import { completeTask, retrieveTasks, updateDueDate } from "./habitica";
 import { playSound } from "./sound";
 import { HabiticaTask } from "./types";
@@ -9,11 +10,21 @@ const Command = () => {
     initialData: [],
   });
 
+  return (
+    <List isLoading={isLoading}>
+      {data.sort(sortByDate).map((task) => (
+        <TaskLineItem task={task} refetchList={revalidate} />
+      ))}
+    </List>
+  );
+};
+
+const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void }> = ({ task, refetchList }) => {
   const handleComplete = async (task: HabiticaTask) => {
     try {
       await showToast({ title: "Completing Task...", message: task.text });
       await completeTask(task.id);
-      revalidate();
+      refetchList();
       playSound("todo.mp3");
     } catch (e) {
       if (e instanceof Error) {
@@ -29,7 +40,7 @@ const Command = () => {
         message: `by ${date?.toLocaleDateString("ja-JP") ?? "No Date"}`,
       });
       await updateDueDate(task.id, date);
-      revalidate();
+      refetchList();
     } catch (e) {
       if (e instanceof Error) {
         await showToast({ title: "Failed:", message: e.message });
@@ -37,64 +48,59 @@ const Command = () => {
       throw e;
     }
   };
-
   return (
-    <List isLoading={isLoading}>
-      {data.sort(sortByDate).map((task) => (
-        <List.Item
-          key={task.text}
-          title={task.text}
-          actions={
-            <ActionPanel title="Habitica">
-              <ActionPanel.Submenu title="Edit">
-                <Action.PickDate
-                  title="Set Date"
-                  shortcut={{
-                    key: "d",
-                    modifiers: ["cmd", "shift"],
-                  }}
-                  onChange={(date) => {
-                    handleUpdateDate(task, date);
-                  }}
-                />
-                <Action
-                  title="Mark as Complete"
-                  shortcut={{
-                    key: "c",
-                    modifiers: ["cmd", "shift"],
-                  }}
-                  onAction={() => handleComplete(task)}
-                />
-              </ActionPanel.Submenu>
-            </ActionPanel>
-          }
-          accessories={[
-            {
-              date: task.date
-                ? {
-                    color: priorityToColor(determinePriority(task.date)),
-                    value: new Date(task.date),
-                  }
-                : null,
-            },
-          ]}
-          detail={
-            <List.Item.Detail
-              metadata={
-                <List.Item.Detail.Metadata>
-                  <List.Item.Detail.Metadata.Label
-                    title="Due Date"
-                    text={task.date ?? "No Due Date"}
-                    icon={Icon.Calendar}
-                  />
-                  <List.Item.Detail.Metadata.Separator />
-                </List.Item.Detail.Metadata>
-              }
+    <List.Item
+      key={task.text}
+      title={task.text}
+      actions={
+        <ActionPanel title="Habitica">
+          <ActionPanel.Submenu title="Edit">
+            <Action.PickDate
+              title="Set Date"
+              shortcut={{
+                key: "d",
+                modifiers: ["cmd", "shift"],
+              }}
+              onChange={(date) => {
+                handleUpdateDate(task, date);
+              }}
             />
+            <Action
+              title="Mark as Complete"
+              shortcut={{
+                key: "c",
+                modifiers: ["cmd", "shift"],
+              }}
+              onAction={() => handleComplete(task)}
+            />
+          </ActionPanel.Submenu>
+        </ActionPanel>
+      }
+      accessories={[
+        {
+          date: task.date
+            ? {
+                color: priorityToColor(determinePriority(task.date)),
+                value: new Date(task.date),
+              }
+            : null,
+        },
+      ]}
+      detail={
+        <List.Item.Detail
+          metadata={
+            <List.Item.Detail.Metadata>
+              <List.Item.Detail.Metadata.Label
+                title="Due Date"
+                text={task.date ?? "No Due Date"}
+                icon={Icon.Calendar}
+              />
+              <List.Item.Detail.Metadata.Separator />
+            </List.Item.Detail.Metadata>
           }
         />
-      ))}
-    </List>
+      }
+    />
   );
 };
 
