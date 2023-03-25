@@ -1,10 +1,10 @@
 import { ActionPanel, Icon, List } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { HabiticaEditMenu } from "./actions/edit";
-import Fuse from "fuse.js";
 import { determineColor, sortByDate } from "./date";
 import { getAllTags, retrieveTasks } from "./habitica";
+import { useSearch } from "./hooks/useSearch";
 import { nameToColor } from "./nameToColor";
 import { priorityToColor } from "./priorityToColor";
 import { HabiticaTask, Tag } from "./types";
@@ -21,35 +21,7 @@ const Command = () => {
     keepPreviousData: true,
   });
 
-  const [searchText, setSearchText] = useState("");
-  const [filteredTasks, setFilteredTasks] = useState<HabiticaTask[]>(unfilteredTasks);
-
-  useEffect(() => {
-    if (searchText === "") {
-      setFilteredTasks(unfilteredTasks);
-      return;
-    }
-    const searchTargets = unfilteredTasks.map((task) => {
-      return {
-        ...task,
-        tags: task.tags.map((tagId) => {
-          const found = allTags?.find((tag) => tag.id === tagId);
-          if (!found) throw new Error(`${tagId} is not a valid tag`);
-          return found;
-        }),
-      };
-    });
-    const fuse = new Fuse(searchTargets, {
-      keys: ["text", "tags.name"],
-    });
-    const result = fuse.search(searchText);
-    setFilteredTasks(
-      result.map((r) => ({
-        ...r.item,
-        tags: r.item.tags.map((t) => t.id),
-      }))
-    );
-  }, [searchText]);
+  const { setSearchText, filteredTasks } = useSearch(unfilteredTasks, allTags);
 
   if (allTags === undefined) return null;
 
