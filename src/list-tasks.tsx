@@ -1,9 +1,11 @@
-import { ActionPanel, Color, Icon, List } from "@raycast/api";
+import { ActionPanel, Icon, List } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { FC } from "react";
 import { HabiticaEditMenu } from "./actions/edit";
+import { determineColor } from "./date";
 import { getTags, retrieveTasks } from "./habitica";
 import { nameToColor } from "./nameToColor";
+import { priorityToColor } from "./priorityToColor";
 import { HabiticaTask } from "./types";
 
 const Command = () => {
@@ -43,7 +45,7 @@ const TaskLineItem: FC<{ task: HabiticaTask; refetchList: () => void }> = ({ tas
         {
           date: task.date
             ? {
-                color: priorityToColor(determinePriority(task.date)),
+                color: priorityToColor(determineColor(task.date)),
                 value: new Date(task.date),
               }
             : null,
@@ -76,39 +78,6 @@ function sortByDate(a: HabiticaTask, b: HabiticaTask) {
     return 1;
   } else {
     return 0;
-  }
-}
-
-type Priority = "high" | "medium" | "low";
-
-function determinePriority(date: string): Priority {
-  const now = new Date();
-  const targetDate = new Date(date);
-
-  if (targetDate < now) {
-    return "high";
-  }
-
-  const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-  const daysDifference = Math.floor((targetDate.getTime() - now.getTime()) / oneDayInMilliseconds);
-
-  if (daysDifference <= 1) {
-    return "high";
-  } else if (daysDifference <= 3) {
-    return "medium";
-  } else {
-    return "low";
-  }
-}
-
-function priorityToColor(priority: Priority) {
-  switch (priority) {
-    case "high":
-      return Color.Red;
-    case "medium":
-      return Color.Orange;
-    case "low":
-      return Color.PrimaryText;
   }
 }
 
