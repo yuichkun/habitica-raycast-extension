@@ -1,6 +1,6 @@
-import Fuse from "fuse.js";
-import { useState, useEffect } from "react";
-import { HabiticaItems, HabiticaTask, Tag } from "../types";
+import { useEffect, useState } from "react";
+import { searchTasks } from "../search";
+import { HabiticaItems, Tag } from "../types";
 
 export function useSearch(unfilteredItems: HabiticaItems, allTags?: Tag[]) {
   const [searchText, setSearchText] = useState("");
@@ -10,26 +10,9 @@ export function useSearch(unfilteredItems: HabiticaItems, allTags?: Tag[]) {
       setFilteredItems(unfilteredItems);
       return;
     }
-    const searchTargets = unfilteredItems.tasks.map((task) => {
-      return {
-        ...task,
-        tags: task.tags.map((tagId) => {
-          const found = allTags?.find((tag) => tag.id === tagId);
-          if (!found) throw new Error(`${tagId} is not a valid tag`);
-          return found;
-        }),
-      };
-    });
-    const fuse = new Fuse(searchTargets, {
-      keys: ["text", "tags.name"],
-      threshold: 0.4,
-    });
-    const result = fuse.search(searchText);
+    const tasks = searchTasks(unfilteredItems.tasks, allTags, searchText);
     setFilteredItems({
-      tasks: result.map((r) => ({
-        ...r.item,
-        tags: r.item.tags.map((t) => t.id),
-      })),
+      tasks,
       dailys: unfilteredItems.dailys,
     });
   }, [searchText, unfilteredItems]);
