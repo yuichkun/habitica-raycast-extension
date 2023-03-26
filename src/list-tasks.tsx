@@ -35,6 +35,7 @@ const Command = () => {
       searchBarAccessory={
         <List.Dropdown
           tooltip="Set types of tasks to show"
+          storeValue={true}
           onChange={(v: string) => setTaskType(v as HabiticaTaskTypes)}
         >
           <List.Dropdown.Section>
