@@ -24,18 +24,19 @@ const Command = () => {
     keepPreviousData: true,
   });
 
-  const { setSearchText, filteredItems } = useSearch(unfilteredItem, allTags);
+  const { searchText, setSearchText, filteredItems } = useSearch(unfilteredItem, allTags);
 
   if (allTags === undefined) return null;
 
   return (
     <List
       isLoading={isAllItemLoading || isAllTagLoading}
+      searchBarPlaceholder="Search by anything. Task title, tags, date, etc."
+      searchText={searchText}
       onSearchTextChange={setSearchText}
       searchBarAccessory={
         <List.Dropdown
           tooltip="Set types of tasks to show"
-          storeValue={true}
           onChange={(v: string) => setTaskType(v as HabiticaTaskTypes)}
         >
           <List.Dropdown.Section>

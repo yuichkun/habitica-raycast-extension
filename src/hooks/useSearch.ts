@@ -3,7 +3,7 @@ import { searchItems } from "../search";
 import { HabiticaItems, Tag } from "../types";
 
 export function useSearch(unfilteredItems: HabiticaItems, allTags?: Tag[]) {
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState("today");
   const [filteredItems, setFilteredItems] = useState<HabiticaItems>(unfilteredItems);
   useEffect(() => {
     if (searchText === "") {
@@ -18,6 +18,7 @@ export function useSearch(unfilteredItems: HabiticaItems, allTags?: Tag[]) {
     });
   }, [searchText, unfilteredItems]);
   return {
+    searchText,
     setSearchText,
     filteredItems,
   };
