@@ -67,6 +67,15 @@ export const HabiticaEditMenu: FC<Props> = ({ item, refetchList }) => {
   };
   return (
     <ActionPanel.Submenu title="Edit">
+      <Action
+        title="Mark as Complete"
+        icon={Icon.CheckCircle}
+        shortcut={{
+          key: "c",
+          modifiers: ["cmd", "shift"],
+        }}
+        onAction={() => handleComplete(item)}
+      />
       {isHabiticaTask(item) && (
         <Action.PickDate
           title="Set Date"
@@ -96,15 +105,6 @@ export const HabiticaEditMenu: FC<Props> = ({ item, refetchList }) => {
           modifiers: ["cmd", "shift"],
         }}
         onAction={() => handleDelete(item)}
-      />
-      <Action
-        title="Mark as Complete"
-        icon={Icon.CheckCircle}
-        shortcut={{
-          key: "c",
-          modifiers: ["cmd", "shift"],
-        }}
-        onAction={() => handleComplete(item)}
       />
     </ActionPanel.Submenu>
   );
