@@ -9,7 +9,7 @@ export enum Priority {
   Default,
 }
 
-export function determineColor(date: string): Priority {
+export function determinePriority(date: string): Priority {
   const now = moment.utc().startOf("day");
   const targetDate = moment.utc(date).startOf("day");
 
