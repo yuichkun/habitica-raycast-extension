@@ -1,4 +1,4 @@
-import { List, ActionPanel, Icon } from "@raycast/api";
+import { ActionPanel, List } from "@raycast/api";
 import { FC } from "react";
 import { HabiticaEditMenu } from "./actions/edit";
 import { determineColor } from "./date";
@@ -35,10 +35,10 @@ export const TaskLineItem: FC<Props> = ({ task, refetchList, allTags }) => {
           },
         })),
         {
-          date: task.date
+          text: task.date
             ? {
                 color: priorityToColor(determineColor(task.date)),
-                value: new Date(task.date),
+                value: new Date(task.date).toLocaleDateString("ja-JP"),
               }
             : null,
         },
