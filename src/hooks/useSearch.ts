@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { searchTasks } from "../search";
+import { searchItems } from "../search";
 import { HabiticaItems, Tag } from "../types";
 
 export function useSearch(unfilteredItems: HabiticaItems, allTags?: Tag[]) {
@@ -10,10 +10,11 @@ export function useSearch(unfilteredItems: HabiticaItems, allTags?: Tag[]) {
       setFilteredItems(unfilteredItems);
       return;
     }
-    const tasks = searchTasks(unfilteredItems.tasks, allTags, searchText);
+    const tasks = searchItems(unfilteredItems.tasks, allTags, searchText);
+    const dailys = searchItems(unfilteredItems.dailys, allTags, searchText);
     setFilteredItems({
       tasks,
-      dailys: unfilteredItems.dailys,
+      dailys,
     });
   }, [searchText, unfilteredItems]);
   return {
