@@ -40,6 +40,7 @@ export function searchItems<T extends HabiticaTask | HabiticaDaily>(
 
     return {
       ...task,
+      hasNoTag: tags.length === 0 ? "no tag" : "",
       tags,
       completed: getCompleted(),
       priority: getPriority(),
@@ -47,7 +48,7 @@ export function searchItems<T extends HabiticaTask | HabiticaDaily>(
     };
   });
   const fuse = new Fuse(searchTargets, {
-    keys: ["text", "tags.name", "completed", "date", "priority"],
+    keys: ["text", "tags.name", "completed", "date", "priority", "hasNoTag"],
     threshold: 0.2,
   });
   const result = fuse.search(searchText);
