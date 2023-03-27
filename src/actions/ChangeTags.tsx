@@ -1,8 +1,8 @@
-import { useNavigation, showToast, Form, ActionPanel, Action } from "@raycast/api";
+import { Action, ActionPanel, Form, showToast, useNavigation } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { FC } from "react";
 import { getAllTags, updateTags } from "../habitica";
-import { HabiticaTask, HabiticaDaily } from "../types";
+import { HabiticaDaily, HabiticaTask } from "../types";
 
 type ChangeTagsProps = {
   item: HabiticaTask | HabiticaDaily;
@@ -40,7 +40,7 @@ export const ChangeTags: FC<ChangeTagsProps> = ({ item: item, refetchList }) => 
         </ActionPanel>
       }
     >
-      <Form.TagPicker id="tags" title="Tags">
+      <Form.TagPicker id="tags" title="Tags" defaultValue={item.tags}>
         {tags.map((tag) => (
           <Form.TagPicker.Item key={tag.id} value={tag.id} title={tag.name} />
         ))}
