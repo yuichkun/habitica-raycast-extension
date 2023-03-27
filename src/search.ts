@@ -1,19 +1,16 @@
 import Fuse from "fuse.js";
 import { determinePriority, Priority } from "./date";
+import { findTags } from "./tag";
 import { HabiticaDaily, HabiticaTask, Tag } from "./types";
 
 export function searchItems<T extends HabiticaTask | HabiticaDaily>(
   unfilteredItems: T[],
-  allTags: Tag[] | undefined,
+  allTags: Tag[],
   searchText: string
 ) {
   type SearchTarget = Omit<T, "tags" | "date"> & { tags: Tag[]; completed?: string; date?: string; priority?: string };
   const searchTargets: SearchTarget[] = unfilteredItems.map((task) => {
-    const tags = task.tags.map((tagId) => {
-      const found = allTags?.find((tag) => tag.id === tagId);
-      if (!found) throw new Error(`${tagId} is not a valid tag`);
-      return found;
-    });
+    const tags = findTags(task, allTags);
 
     function getCompleted() {
       if ("completed" in task) {

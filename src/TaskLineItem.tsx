@@ -4,6 +4,7 @@ import { HabiticaEditMenu } from "./actions/edit";
 import { determinePriority } from "./date";
 import { nameToColor } from "./nameToColor";
 import { priorityToColor } from "./priorityToColor";
+import { findTags } from "./tag";
 import { HabiticaTask, Tag } from "./types";
 
 type Props = {
@@ -13,11 +14,7 @@ type Props = {
 };
 
 export const TaskLineItem: FC<Props> = ({ task, refetchList, allTags }) => {
-  const tags = task.tags.map((tagId) => {
-    const found = allTags.find((tag) => tag.id === tagId);
-    if (!found) throw new Error(`${tagId} is not a valid tag id`);
-    return found;
-  });
+  const tags = findTags(task, allTags);
   return (
     <List.Item
       key={task.id}

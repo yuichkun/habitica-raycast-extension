@@ -1,32 +1,34 @@
 import { Icon, List } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { DailyLineItem } from "./DailyLineItem";
 import { sortByDate } from "./date";
 import { getAllTags, retrieveAllItems } from "./habitica";
 import { useSearch } from "./hooks/useSearch";
 import { TaskLineItem } from "./TaskLineItem";
-import { HabiticaTaskTypes } from "./types";
+import { HabiticaItems, HabiticaTaskTypes, Tag } from "./types";
 
 const Command = () => {
+  const initialData = useMemo(() => {
+    return {
+      tasks: [],
+      dailys: [],
+    } as HabiticaItems;
+  }, []);
+
   const [taskType, setTaskType] = useState<HabiticaTaskTypes>("todo");
   const {
     isLoading: isAllItemLoading,
     data: unfilteredItem,
     revalidate: refetchList,
   } = useCachedPromise(retrieveAllItems, [], {
-    initialData: {
-      tasks: [],
-      dailys: [],
-    },
+    initialData,
   });
   const { isLoading: isAllTagLoading, data: allTags } = useCachedPromise(getAllTags, [], {
-    keepPreviousData: true,
+    initialData: [] as Tag[],
   });
 
   const { searchText, setSearchText, filteredItems } = useSearch(unfilteredItem, allTags);
-
-  if (allTags === undefined) return null;
 
   return (
     <List
