@@ -4,6 +4,7 @@ import { completeTask, deleteTask, updateDueDate } from "../habitica";
 import { playSound } from "../sound";
 import { HabiticaDaily, HabiticaTask } from "../types";
 import { ChangeTags } from "./ChangeTags";
+import { RenameTask } from "./RenameTask";
 type Props = {
   item: HabiticaTask | HabiticaDaily;
   refetchList: () => void;
@@ -88,6 +89,15 @@ export const HabiticaEditMenu: FC<Props> = ({ item, refetchList }) => {
           }}
         />
       )}
+      <Action.Push
+        title="Rename Task"
+        icon={Icon.Tag}
+        shortcut={{
+          key: "r",
+          modifiers: ["cmd", "shift"],
+        }}
+        target={<RenameTask item={item} refetchList={refetchList} />}
+      />
       <Action.Push
         title="Change Tags"
         icon={Icon.Tag}

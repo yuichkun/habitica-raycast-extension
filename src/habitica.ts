@@ -68,6 +68,12 @@ export async function deleteTask(taskId: string) {
   await habiticaClient.delete(`/api/v3/tasks/${taskId}`);
 }
 
+export async function renameTask(taskId: string, text: string) {
+  await habiticaClient.put(`/api/v3/tasks/${taskId}`, {
+    text,
+  });
+}
+
 export async function updateDueDate(taskId: string, date: Date | null) {
   await habiticaClient.put(`/api/v3/tasks/${taskId}`, {
     date: date,
