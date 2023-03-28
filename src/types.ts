@@ -23,6 +23,7 @@ export type HabiticaDaily = {
   id: string;
   text: string;
   tags: string[];
+  isDue: boolean;
   completed: boolean;
 };
 
