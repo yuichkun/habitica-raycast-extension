@@ -1,17 +1,10 @@
-import { getPreferenceValues } from "@raycast/api";
 import axios from "axios";
-import {
-  GetAllTagsResponse,
-  HabiticaDaily,
-  HabiticaItems,
-  HabiticaTask,
-  HabiticaTaskTypes,
-  Preferences,
-} from "./types";
+import { getConfig } from "./config";
+import { GetAllTagsResponse, HabiticaDaily, HabiticaItems, HabiticaTask, HabiticaTaskTypes } from "./types";
 
 // yuichkun's habitica's ID
 const AUTHOR_ID = "f9b0f250-35a4-498c-ae5b-3aa48bf167e7";
-const { HABITICA_USER_ID, HABITICA_API_KEY } = getPreferenceValues<Preferences>();
+const { HABITICA_USER_ID, HABITICA_API_KEY } = getConfig();
 
 const habiticaClient = axios.create({
   baseURL: "https://habitica.com",
