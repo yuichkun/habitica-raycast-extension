@@ -1,6 +1,7 @@
 import { ActionPanel, List } from "@raycast/api";
 import { FC } from "react";
 import { HabiticaEditMenu } from "./actions/edit";
+import { getConfig } from "./config";
 import { determinePriority } from "./date";
 import { nameToColor } from "./nameToColor";
 import { priorityToColor } from "./priorityToColor";
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export const TaskLineItem: FC<Props> = ({ task, refetchList, allTags }) => {
+  const { language } = getConfig();
   const tags = findTags(task, allTags);
   return (
     <List.Item
@@ -35,7 +37,7 @@ export const TaskLineItem: FC<Props> = ({ task, refetchList, allTags }) => {
           text: task.date
             ? {
                 color: priorityToColor(determinePriority(task.date)),
-                value: new Date(task.date).toLocaleDateString("ja-JP"),
+                value: new Date(task.date).toLocaleDateString(language),
               }
             : null,
         },

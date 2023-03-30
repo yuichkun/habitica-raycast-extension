@@ -10,6 +10,7 @@ export type HabiticaTaskTypes = "habit" | "daily" | "todo" | "reward";
 export interface Preferences {
   HABITICA_USER_ID: string;
   HABITICA_API_KEY: string;
+  language: string;
 }
 
 export type HabiticaTask = {

@@ -37,6 +37,14 @@
       "description": "Habitica's API Key",
       "type": "password",
       "required": true
+    },
+    {
+      "name": "language",
+      "title": "Language",
+      "description": "Language",
+      "type": "textfield",
+      "default": "en-US",
+      "required": false
     }
   ],
   "dependencies": {

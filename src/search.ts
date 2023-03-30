@@ -1,4 +1,5 @@
 import Fuse from "fuse.js";
+import { getConfig } from "./config";
 import { determinePriority, Priority } from "./date";
 import { findTags } from "./tag";
 import { HabiticaDaily, HabiticaTask, Tag } from "./types";
@@ -8,6 +9,7 @@ export function searchItems<T extends HabiticaTask | HabiticaDaily>(
   allTags: Tag[],
   searchText: string
 ) {
+  const { language } = getConfig();
   type SearchTarget = Omit<T, "tags" | "date"> & { tags: Tag[]; completed?: string; date?: string; priority?: string };
   const searchTargets: SearchTarget[] = unfilteredItems.map((task) => {
     const tags = findTags(task, allTags);
@@ -34,7 +36,7 @@ export function searchItems<T extends HabiticaTask | HabiticaDaily>(
     }
     function getDate() {
       if ("date" in task && task.date) {
-        return new Date(task.date).toLocaleDateString("ja-JP");
+        return new Date(task.date).toLocaleDateString(language);
       }
     }
 

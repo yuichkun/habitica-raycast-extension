@@ -1,5 +1,6 @@
 import { Action, ActionPanel, Icon, showToast } from "@raycast/api";
 import { FC } from "react";
+import { getConfig } from "../config";
 import { completeTask, deleteTask, updateDueDate } from "../habitica";
 import { playSound } from "../sound";
 import { HabiticaDaily, HabiticaTask } from "../types";
@@ -19,6 +20,7 @@ function isHabiticaTask(item: HabiticaTask | HabiticaDaily): item is HabiticaTas
 }
 
 export const HabiticaEditMenu: FC<Props> = ({ item, refetchList }) => {
+  const { language } = getConfig();
   const handleComplete = async (task: HabiticaTask | HabiticaDaily) => {
     try {
       await showToast({ title: "Completing Task...", message: task.text });
@@ -40,7 +42,7 @@ export const HabiticaEditMenu: FC<Props> = ({ item, refetchList }) => {
     try {
       await showToast({
         title: "Updating Task Due Date",
-        message: `by ${date?.toLocaleDateString("ja-JP") ?? "No Date"}`,
+        message: `by ${date?.toLocaleDateString(language) ?? "No Date"}`,
       });
       await updateDueDate(task.id, date);
       refetchList();
