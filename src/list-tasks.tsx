@@ -1,6 +1,6 @@
 import { Icon, List } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DailyLineItem } from "./DailyLineItem";
 import { sortByDate } from "./date";
 import { getAllTags, retrieveAllItems } from "./habitica";
@@ -29,6 +29,14 @@ const Command = () => {
   });
 
   const { searchText, setSearchText, filteredItems } = useSearch(unfilteredItem, allTags);
+  useEffect(() => {
+    if (taskType === "todo") {
+      setSearchText("today");
+    }
+    if (taskType === "daily") {
+      setSearchText("incomplete");
+    }
+  }, [taskType]);
 
   return (
     <List
