@@ -12,11 +12,8 @@ type Props = {
 };
 
 function isHabiticaTask(item: HabiticaTask | HabiticaDaily): item is HabiticaTask {
-  if ("date" in item) {
-    return true;
-  } else {
-    return false;
-  }
+  if (item.type === "todo") return true;
+  return false;
 }
 
 export const HabiticaEditMenu: FC<Props> = ({ item, refetchList }) => {

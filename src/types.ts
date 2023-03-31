@@ -18,6 +18,7 @@ export type HabiticaTask = {
   text: string;
   date: string | null;
   tags: string[];
+  type: "todo";
 };
 
 export type HabiticaDaily = {
@@ -26,6 +27,7 @@ export type HabiticaDaily = {
   tags: string[];
   isDue: boolean;
   completed: boolean;
+  type: "daily";
 };
 
 export type HabiticaItems = {
