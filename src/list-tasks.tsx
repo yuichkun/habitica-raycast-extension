@@ -38,6 +38,8 @@ const Command = () => {
     }
   }, [taskType]);
 
+  const filteredItemsCount = filteredItems.tasks.length;
+
   return (
     <List
       isLoading={isAllItemLoading || isAllTagLoading}
@@ -50,7 +52,7 @@ const Command = () => {
           onChange={(v: string) => setTaskType(v as HabiticaTaskTypes)}
         >
           <List.Dropdown.Section>
-            <List.Dropdown.Item title="To Do's" value="todo" icon={Icon.Pencil} />
+            <List.Dropdown.Item title={`To Do's (${filteredItemsCount})`} value="todo" icon={Icon.Pencil} />
             <List.Dropdown.Item title="Dailies" value="daily" icon={Icon.Alarm} />
           </List.Dropdown.Section>
         </List.Dropdown>
