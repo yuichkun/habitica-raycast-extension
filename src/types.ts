@@ -1,11 +1,19 @@
 export interface Todo {
   title: string;
+  difficulty: string;
   type: HabiticaTaskTypes;
   date?: Date;
   tags: string[];
 }
 
 export type HabiticaTaskTypes = "habit" | "daily" | "todo" | "reward";
+
+export enum HabiticaTaskDifficulty {
+  Trivial = 0.1,
+  Easy = 1,
+  Medium = 1.5,
+  Hard = 2,
+}
 
 export interface Preferences {
   HABITICA_USER_ID: string;

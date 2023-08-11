@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getConfig } from "./config";
-import { GetAllTagsResponse, HabiticaDaily, HabiticaItems, HabiticaTask, HabiticaTaskTypes } from "./types";
+import { GetAllTagsResponse, HabiticaDaily, HabiticaItems, HabiticaTask, HabiticaTaskTypes, HabiticaTaskDifficulty } from "./types";
 import { sortByDate } from "./date";
 
 // yuichkun's habitica's ID
@@ -19,16 +19,18 @@ const habiticaClient = axios.create({
 
 type CreateTaskArgs = {
   text: string;
+  difficulty: string;
   type: HabiticaTaskTypes;
   date?: string;
   tags?: string[];
 };
-export function createTask({ text, type, date, tags }: CreateTaskArgs) {
+export function createTask({ text, type, difficulty, date, tags }: CreateTaskArgs) {
   return habiticaClient.post("/api/v3/tasks/user", {
-    text,
-    type,
-    date,
-    tags,
+    text: text,
+    priority: HabiticaTaskDifficulty[difficulty as keyof typeof HabiticaTaskDifficulty],
+    type: type,
+    date: date,
+    tags: tags,
   });
 }
 

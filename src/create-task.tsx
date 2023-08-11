@@ -13,6 +13,7 @@ export default function Command() {
       await showToast({ title: "Creating a new Task...", message: todo.title });
       await createTask({
         text: todo.title,
+        difficulty: todo.difficulty,
         type: todo.type,
         date: todo.date?.toISOString(),
         tags: todo.tags,
@@ -50,6 +51,12 @@ const CreateTodoForm: FC<Props> = ({ onCreate, tags, isLoading }) => {
       }
     >
       <Form.TextField id="title" title="Task Name" />
+      <Form.Dropdown id="difficulty" title="Difficulty" defaultValue="Easy">
+        <Form.Dropdown.Item value="Trivial" title="Trivial" icon={Icon.Stars} />
+        <Form.Dropdown.Item value="Easy" title="Easy" icon={Icon.Stars} />
+        <Form.Dropdown.Item value="Medium" title="Medium" icon={Icon.Stars} />
+        <Form.Dropdown.Item value="Hard" title="Hard" icon={Icon.Stars} />
+      </Form.Dropdown>
       <Form.Dropdown id="type" title="Type" defaultValue="todo">
         <Form.Dropdown.Item value="todo" title="To Do's" icon={Icon.Pencil} />
         <Form.Dropdown.Item value="daily" title="Dailies" icon={Icon.Alarm} />
